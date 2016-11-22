@@ -20,11 +20,18 @@ public class Main {
 	p2.update(selection);
 	selection = p2.select();
 	p1.update(selection);
-	gameState.update();
+	gameState.update(selection);
 	
+	
+	String move;
 	//main game loop
 	while (gameRunning) {
-	    
+	    move = p1.move();
+	    p2.update(move);
+	    gameRunning = gameState.update(move);
+	    move = p2.move();
+	    p1.update(move);
+	    gameRunning = gameState.update(move);
 	}
 
     }
