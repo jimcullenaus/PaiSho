@@ -9,10 +9,14 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import Model.GameState;
+
 
 public class BoardPanel extends JPanel{
     
-    BufferedImage[] imageBuffer = new BufferedImage[24];
+    GameState gameState;
+    BufferedImage[] imageBuffer = new BufferedImage[24];//board
+    BufferedImage[] imageBuffer2 = new BufferedImage[25];//pieces
     int[][] tileMap = {
 	    {0,0,0,0,0,0,1,12,3,3,3,18,1,0,0,0,0,0,0},
 	    {0,0,0,0,1,1,1,1,12,3,18,1,1,1,1,0,0,0,0},
@@ -35,7 +39,8 @@ public class BoardPanel extends JPanel{
 	    {0,0,0,0,0,0,1,17,3,3,3,11,1,0,0,0,0,0,0}};
     
     
-    public BoardPanel() {
+    public BoardPanel(GameState gs) {
+	gameState = gs;
 	loadImages();
 	setSize(608, 608);
 	setBackground(new Color (174, 222, 247));//pale blue
@@ -47,7 +52,7 @@ public class BoardPanel extends JPanel{
     protected void paintComponent(Graphics g){
 	super.paintComponent(g);
 	drawBoard(g);
-	drawPieces();
+	drawPieces(g);
     }
     
     private void drawBoard(Graphics g){
@@ -67,8 +72,28 @@ public class BoardPanel extends JPanel{
 		g2.drawImage(frame, 0, 0, 608, 608, null);
 	}catch (Exception e){}
     }
-    private void drawPieces(){
-	
+    
+    
+    
+    
+    
+    private void drawPieces(Graphics g){
+	Graphics2D g2 = (Graphics2D)g;
+	g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	BufferedImage tile;
+	int[][] matrix = gameState.getTileMatrix();
+	for (int i=0; i<19; i++) {
+	    for (int j=0; j<19; j++) {
+		if (matrix[j][i]!=-1){
+		    try{
+		    tile = imageBuffer2[matrix[j][i]+1];
+		    g2.drawImage(tile, i*32, j*32, 32, 32, null);
+		    }catch(Exception e) {System.out.println(matrix[j][i]);}
+		}
+		
+		 
+	    }
+	}
     }
     private void loadImages() {
 	try{
@@ -78,6 +103,21 @@ public class BoardPanel extends JPanel{
 	}
 	} catch (Exception e) {
 	    System.out.println("error1");
+	}
+	
+	
+	String[] sprites = {"001","002","003","004","005","006","007",
+		"008","009","010","011","012","201","202","203","204",
+		"205","206","207","208","209","210","211","212"};
+
+	try{
+	imageBuffer2[0] = ImageIO.read(getClass().getResource(
+		"../images/pieces/blank.png"));
+	for (int i=1;i<25;i++) {
+	    imageBuffer2[i] = ImageIO.read(getClass().getResource(
+			"../images/pieces/"+sprites[i-1]+".png"));
+	}
+	}catch (Exception e) {
 	}
     }
 

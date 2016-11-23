@@ -1,0 +1,16 @@
+
+SELECT #,#,#,#			SELECT tile,tile,tile,tile
+
+							tile -  0 rock
+									1-wheel
+									2-weed
+									3-boat
+									
+PLACE #,#,#				PLACE tile,x,y
+
+							tile -  0 - 1r3
+									1 - 1r4
+									
+									x and y 0-18
+							
+MOVE #,#,#,#,#			MOVE tile,x,y,destx,desty

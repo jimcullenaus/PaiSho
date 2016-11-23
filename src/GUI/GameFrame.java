@@ -18,11 +18,11 @@ public class GameFrame extends JFrame{
 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	setResizable(false);
 	
-	bp = new BoardPanel();
-	//PlayerPanel pp = new PlayerPanel();
+	bp = new BoardPanel(gs);
+	PlayerPanel pp = new PlayerPanel(gs);
 	
 	add(bp);
-	//add(pp);
+	add(pp);
 	
 
 	bp.grabFocus();
