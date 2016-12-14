@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -17,6 +18,7 @@ public class BoardPanel extends JPanel{
     GameState gameState;
     BufferedImage[] imageBuffer = new BufferedImage[24];//board
     BufferedImage[] imageBuffer2 = new BufferedImage[25];//pieces
+    BufferedImage[] imageBuffer3 = new BufferedImage[4];//harmonies
     int[][] tileMap = {
 	    {0,0,0,0,0,0,1,12,3,3,3,18,1,0,0,0,0,0,0},
 	    {0,0,0,0,1,1,1,1,12,3,18,1,1,1,1,0,0,0,0},
@@ -53,6 +55,7 @@ public class BoardPanel extends JPanel{
 	super.paintComponent(g);
 	drawBoard(g);
 	drawPieces(g);
+	drawHarmonies(g);
     }
     
     private void drawBoard(Graphics g){
@@ -95,6 +98,37 @@ public class BoardPanel extends JPanel{
 	    }
 	}
     }
+    private void drawHarmonies(Graphics g){
+	Graphics2D g2 = (Graphics2D)g;
+	g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	ArrayList<Integer[]> harmonies = gameState.getHarmonies();
+	for (int i=0; i<harmonies.size(); i++) {
+	    Integer[] harmony = harmonies.get(i);
+	    BufferedImage token = imageBuffer3[0];
+	    BufferedImage dot = imageBuffer3[1];
+	    if (harmony[4]==2) {
+		token = imageBuffer3[2];
+		dot = imageBuffer3[3];
+	    } 
+	    int x = harmony[0];
+	    int y = harmony[1];
+	    
+	    //draw start tile
+	    g2.drawImage(token, x*32, y*32, 32, 32, null);
+	    //draw dots between
+	    if (harmony[5]!=1){//horizontal
+		for (x++; x<harmony[2];x++){
+		    g2.drawImage(dot, x*32, y*32, 32, 32, null);
+		}
+	    } else {
+		for (y++; y<harmony[3];y++){
+		    g2.drawImage(dot, x*32, y*32, 32, 32, null);
+		}
+	    }
+	    //draw end tile
+	    g2.drawImage(token, x*32, y*32, 32, 32, null);
+	}
+    }
     private void loadImages() {
 	try{
 	for (int i=0; i<19; i++) {
@@ -116,6 +150,16 @@ public class BoardPanel extends JPanel{
 	for (int i=1;i<25;i++) {
 	    imageBuffer2[i] = ImageIO.read(getClass().getResource(
 			"../images/pieces/"+sprites[i-1]+".png"));
+	}
+	}catch (Exception e) {
+	}
+	
+	String[] sprites2 = {"blue1","blue2","magenta1","magenta2"};
+
+	try{
+	for (int i=0;i<4;i++) {
+	    imageBuffer3[i] = ImageIO.read(getClass().getResource(
+			"../images/"+sprites2[i]+".png"));
 	}
 	}catch (Exception e) {
 	}

@@ -5,12 +5,18 @@ import java.util.ArrayList;
 public class GameState {
     
     int[][] tileMatrix;
+    //list of array[tile1x,tile1y,tile2x, tile2y, player, verticle]
+    //tile1 should be higher or lefter than tile2
+    ArrayList<Integer[]> harmonies;
     //the banks contains the number of each type of pieces not yet played
     //example bank[1]=3 means non of the 3 1r3 peices have been played yet
     int[] bank;
     
     public GameState(){
 	tileMatrix = new int[19][19];
+	harmonies = new ArrayList<Integer[]>();
+	Integer [] test = {9,9,9,12,1,1};
+	harmonies.add(test);
 	int[] b = {3,3,3,3,3,3,1,1,0,0,0,0,3,3,3,3,3,3,1,1,0,0,0,0};
 	bank = b;
 	
@@ -27,9 +33,10 @@ public class GameState {
     /**
      * 
      * @param str, the latest command to process
-     * @return false if invalid command or the game has been won
+     * @return return 0 if no problem, 1 if illegal move,
+     * and 2 if bonus round
      */
-    public boolean update(String str){
+    public int update(String str){
 	String[] split = str.split(" ");
 	int player = Integer.parseInt(split[0]);
 	
@@ -52,7 +59,7 @@ public class GameState {
 	    if (bank[i]>0){
 		bank[i]--;
 	    }else{
-		return false;
+		return 1;
 	    }
 	    int x = Integer.parseInt(s[1]);
 	    int y = Integer.parseInt(s[2]);
@@ -73,12 +80,38 @@ public class GameState {
 	    tileMatrix[desty][destx] = tile+(player-1)*12;
 	}
 	
-	return true;
+	if (updateHarmonies()){
+	    return 2;
+	}
+	
+	return 0;
+    }
+    /**
+     * same as update but used for bonus rounds so there can't
+     * be additional bonus rounds in one turn
+     */
+    public int update(String s, Boolean b) {
+	int r=update(s);
+	if (r==2){
+	    return 0;
+	}
+	return r;
     }
     public int[][] getTileMatrix() {
 	return tileMatrix;
     }
     public int[] getBank(){
 	return bank;
+    }
+    public ArrayList<Integer[]> getHarmonies(){
+	return harmonies;
+    }
+    
+    /**
+     * Add any new harmonies and removes new invalid harmonies
+     * returns true if there is a change
+     */
+    private boolean updateHarmonies() {
+	return false;
     }
 }
